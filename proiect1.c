@@ -3,43 +3,47 @@
 #include <sys/types.h>
 #include <time.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
-void user(struct stat st, FILE *fisierul)
+
+void user(struct stat st, int fisierul)
 {
-   fprintf(fisierul, "Drepturile de acces pentru useri: ");
-   if(st.st_mode & S_IRUSR) fprintf(fisierul, "R");
-     else fprintf(fisierul, "-");
-   if(st.st_mode & S_IWUSR) fprintf(fisierul, "W");
-     else fprintf(fisierul, "-");
-   if(st.st_mode & S_IXUSR) fprintf(fisierul, "X");
-     else fprintf(fisierul, "-");
-   fprintf(fisierul, "\n");
+   write(fisierul, "Drepturile de acces pentru useri: ", 33);
+   if(st.st_mode & S_IRUSR) write(fisierul, "R", 1);
+     else write(fisierul, "-", 1);
+   if(st.st_mode & S_IWUSR) write(fisierul, "W", 1);
+     else write(fisierul, "-", 1);
+   if(st.st_mode & S_IXUSR) write(fisierul, "X", 1);
+     else write(fisierul, "-", 1);
+   write(fisierul, "\n", 1);
 }
 
-void grup(struct stat st, FILE *fisierul)
+void grup(struct stat st, int fisierul)
 {
-    fprintf(fisierul, "Drepturile de acces pentru grup: ");
-    if(st.st_mode & S_IRGRP) fprintf(fisierul, "R");
-      else fprintf(fisierul, "-");
-    if(st.st_mode & S_IWGRP) fprintf(fisierul, "W");
-      else fprintf(fisierul, "-");
-    if(st.st_mode & S_IXGRP) fprintf(fisierul, "X");
-      else fprintf(fisierul, "-");
-    fprintf(fisierul, "\n");
+    write(fisierul, "Drepturile de acces pentru grup: ", 33);
+    if(st.st_mode & S_IRGRP) write(fisierul, "R", 1);
+      else write(fisierul, "-", 1);
+    if(st.st_mode & S_IWGRP) write(fisierul, "W", 1);
+      else write(fisierul, "-", 1);
+    if(st.st_mode & S_IXGRP) write(fisierul, "X", 1);
+      else write(fisierul, "-", 1);
+    write(fisierul, "\n", 1);
 }
 
-void altii(struct stat st, FILE *fisierul)
+void altii(struct stat st, int fisierul)
 {
-    fprintf(fisierul, "Drepturile de acces pentru altii: ");
-    if (st.st_mode & S_IROTH) fprintf(fisierul, "R");
-      else fprintf(fisierul, "-");
-    if (st.st_mode & S_IWOTH) fprintf(fisierul, "W");
-      else fprintf(fisierul, "-");
-    if (st.st_mode & S_IXOTH) fprintf(fisierul, "X");
-      else fprintf(fisierul, "-");
-    fprintf(fisierul, "\n");
+    write(fisierul, "Drepturile de acces pentru altii: ", 34);
+    if (st.st_mode & S_IROTH) write(fisierul, "R", 1);
+      else write(fisierul, "-", 1);
+    if (st.st_mode & S_IWOTH) write(fisierul, "W", 1);
+      else write(fisierul, "-", 1);
+    if (st.st_mode & S_IXOTH) write(fisierul, "X", 1);
+      else write(fisierul, "-", 1);
+    write(fisierul, "\n", 1);
 }
+
 
 void fisier(char *numeFisier, int inaltime, int lungime, char *userId, int nrLegaturi) 
 {
