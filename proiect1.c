@@ -6,8 +6,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
-
 void user(struct stat st, int fisierul)
 {
    write(fisierul, "Drepturile de acces pentru useri: ", 33);
@@ -81,7 +79,6 @@ void fisier(char *numeFisier, int inaltime, int lungime, char *userId, int nrLeg
 
 int main(int argc,char *argv[])
 {
-
 	if(argc==2)
 	{
 	   printf("Argumentele sunt: %s %s\n",argv[0],argv[1]);
