@@ -43,7 +43,7 @@ void altii(struct stat st, int fisierul)
 }
 
 
-void fisier(char *numeFisier, int inaltime, int lungime, char *userId, int nrLegaturi) 
+void fisier(char *numeFisier, int inaltime, int lungime, int userId, int nrLegaturi) 
 {
     struct stat st;
     stat(numeFisier,&st);
@@ -52,28 +52,45 @@ void fisier(char *numeFisier, int inaltime, int lungime, char *userId, int nrLeg
 	   printf("Este fisier!\n");
 	}else printf("EROARE\n");
 
-    char timp[20];
+    char timp[20],buffer[256];
+    int n;
     strftime(timp, sizeof(timp), "%d.%m.%Y", localtime(&st.st_mtime));
 
-    FILE *fisierul = fopen("statistica.txt", "w");
-    if (fisierul == NULL) 
+    int fisierul = open("statistica.txt",  O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IWOTH | S_IROTH);
+    if (fisierul == -1) 
     {
         perror("EROARE");
         exit(-1);
     }
 
-    fprintf(fisierul, "nume fisier: %s\n", numeFisier);
-    fprintf(fisierul, "inaltime: %d\n", inaltime);
-    fprintf(fisierul, "lungime: %d\n", lungime);
-    fprintf(fisierul, "dimensiune: %ld octeti\n", st.st_size);
-    fprintf(fisierul, "identificatorul utilizatorului: %s\n", userId);
-    fprintf(fisierul, "timpul ultimei modificari: %s\n", timp);
-    fprintf(fisierul, "contorul de legaturi: %d\n", nrLegaturi);
+    write(fisierul, "nume fisier: ", 13);
+    write(fisierul, numeFisier, strlen(numeFisier));
+    write(fisierul, "\n", 1);
+
+    n = sprintf(buffer, "inaltime: %d\n", inaltime);
+    write(fisierul, buffer, n);
+
+    n = sprintf(buffer, "lungime: %d\n", lungime);
+    write(fisierul, buffer, n);
+
+    n = sprintf(buffer, "dimensiune: %ld octeti\n", st.st_size);
+    write(fisierul, buffer, n);
+
+    n = sprintf(buffer, "identificatorul utilizatorului: %d\n", userId);
+    write(fisierul, buffer, n);
+
+    n = sprintf(buffer, "timpul ultimei modificari: %s\n", timp);
+    write(fisierul, buffer, n);
+
+    n = sprintf(buffer, "contorul de legaturi: %d\n", nrLegaturi);
+    write(fisierul, buffer, n);
+
     user(st, fisierul);
     grup(st, fisierul);
     altii(st, fisierul);
 
-    fclose(fisierul);
+    close(fisierul);
+
 }
 
 
@@ -84,7 +101,9 @@ int main(int argc,char *argv[])
 	   printf("Argumentele sunt: %s %s\n",argv[0],argv[1]);
 	}else printf("EROARE\n");
 	
-    fisier(argv[1], 1920, 1280, "<user id>", 5);
+  int userID = getpid();
+
+  fisier(argv[1], 1920, 1280, userID, 5);
 
 	return 0;
 }
