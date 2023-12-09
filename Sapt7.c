@@ -240,7 +240,8 @@ void tipFisier(char *nume)
     while((in=readdir(d))!=NULL) //// va returna un pointer catre o structura de tip struct dirent
     {
         lstat(in->d_name, &st);
-        
+      if(strcmp(in->d_name,".") == 0 || strcmp(in->d_name,"..") == 0)
+                continue;
       if (S_ISDIR(st.st_mode)) {
             director(in->d_name);
         } else if (S_ISLNK(st.st_mode)) {
