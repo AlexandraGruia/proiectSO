@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
+
 
 void user(struct stat st, int fisierul)
 {
@@ -43,16 +45,24 @@ void altii(struct stat st, int fisierul)
 }
 
 
-void fisier(char *numeFisier, int inaltime, int lungime, int userId, int nrLegaturi) 
+void fisier(char *numeFisier) 
 {
     struct stat st;
     stat(numeFisier,&st);
+    int fisierulNecesar = open(numeFisier, O_RDONLY);
+    int lungime = 0;
+    int inaltime = 0;
+    lseek(fisierulNecesar, 18, SEEK_SET);  // Poziționare la începutul informațiilor despre imagine
+    read(fisierulNecesar,&inaltime,4);
+    read(fisierulNecesar,&lungime,4);
 	if(S_ISREG(st.st_mode))
 	{
-	   printf("Este fisier!\n");
+      printf("Este fisier!\n");
+     
 	}else printf("EROARE\n");
-
-    char timp[20],buffer[256];
+ 
+    char timp[20];
+    char buffer[256];
     int n;
     strftime(timp, sizeof(timp), "%d.%m.%Y", localtime(&st.st_mtime));
 
@@ -76,15 +86,15 @@ void fisier(char *numeFisier, int inaltime, int lungime, int userId, int nrLegat
     n = sprintf(buffer, "dimensiune: %ld octeti\n", st.st_size);
     write(fisierul, buffer, n);
 
-    n = sprintf(buffer, "identificatorul utilizatorului: %d\n", userId);
+    n = sprintf(buffer, "identificatorul utilizatorului: %d\n", st.st_uid);
     write(fisierul, buffer, n);
 
     n = sprintf(buffer, "timpul ultimei modificari: %s\n", timp);
     write(fisierul, buffer, n);
 
-    n = sprintf(buffer, "contorul de legaturi: %d\n", nrLegaturi);
+    n = sprintf(buffer, "contorul de legaturi: %d\n", st.st_nlink);
     write(fisierul, buffer, n);
-
+   
     user(st, fisierul);
     grup(st, fisierul);
     altii(st, fisierul);
@@ -100,10 +110,8 @@ int main(int argc,char *argv[])
 	{
 	   printf("Argumentele sunt: %s %s\n",argv[0],argv[1]);
 	}else printf("EROARE\n");
-	
-  int userID = getpid();
 
-  fisier(argv[1], 1920, 1280, userID, 5);
+    fisier(argv[1]);
 
 	return 0;
 }
