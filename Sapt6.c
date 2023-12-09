@@ -58,10 +58,7 @@ void fisier(char *numeFisier)
 	if(S_ISREG(st.st_mode))
 	{
       printf("Este fisier!\n");
-     
-	}else printf("EROARE\n");
- 
-    char timp[20];
+     char timp[20];
     char buffer[256];
     int n;
     strftime(timp, sizeof(timp), "%d.%m.%Y", localtime(&st.st_mtime));
@@ -101,6 +98,9 @@ void fisier(char *numeFisier)
 
     close(fisierul);
 
+	}else printf("EROARE\n");
+ 
+    
 }
 
 
