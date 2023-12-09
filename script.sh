@@ -1,6 +1,6 @@
 if test "$#" -ne 1 #Verifică dacă numărul de argumente din linia de comandă ! 1
 then
-echo "Folosesete scriptul! "
+echo "Eroare!"
 exit 1
 fi
 
